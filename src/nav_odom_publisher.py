@@ -32,21 +32,16 @@ lin_vel = Vector3(0, 0, 0)
 ang_vel = Vector3(0, 0, 0)
 
 base_link_GPS_2_base_link_tf = tf.TransformBroadcaster()
-96
+
 utmpos = pos()
 utmori = Quaternion()
         
 def callback_imu_data(data):
-    global utmori, lin_vel, ang_vel
+    global utmori, ang_vel
     # subscribed data(type: geometry_msgs.Quaternion) --> euler(type: tuple)
     euler = tf.transformations.euler_from_quaternion((data.orientation.x,data.orientation.y,data.orientation.z,data.orientation.w))
 
-    # lin_acc = data.linear_acceleration
     ang_vel = data.angular_velocity
-    # dt = 0.1
-    # lin_vel.x += lin_acc.x * dt
-    # lin_vel.y += lin_acc.y * dt
-    #lin_vel.z += lin_acc.z * dt
 
     # euler --> quaternion (type: numpy.ndarray)
     # We can't change tuple elements, so we just change the rotation axis direction on this line below.
@@ -81,8 +76,7 @@ def callback(data):
         init = False
         rospy.set_param('/geonav_datum', [init_fix.latitude, init_fix.longitude, init_fix.altitude])
         rospy.sleep(0.01)
-    
-    # map_2_odom_GPS.sendTransform((0,0,0),tf.transformations.quaternion_from_euler(0, 0, 0),rospy.Time(),"odom_GPS","map") 
+
     pub_init_fix.publish(init_fix)
 
 
@@ -94,13 +88,11 @@ def mainplaying():
     rospy.Subscriber("fix", NavSatFix, callback)
     rospy.Subscriber("vel", TwistStamped, callback_gps_vel)
     rospy.Subscriber("imu_data", Imu, callback_imu_data)
-    rospy.init_node('nav_odom_2_base_link_publisher',anonymous=True)
+    rospy.init_node('nav_odom_publisher',anonymous=True)
     rate = rospy.Rate(10)
 
     while not rospy.is_shutdown():
         global utmori, lin_vel, ang_vel
-
-        # rospy.loginfo(utmori)
 
         current_time = rospy.Time.now()
         odom.header.stamp = current_time
@@ -123,9 +115,8 @@ def mainplaying():
             rospy.Time.now(),
             "base_link",
             "base_link_GPS")
-
-        time.sleep(0.1) # we can make the python node usage down with this code...
-        rospy.Rate(10).sleep # ...Not with this code! It just works on rospy.
+        
+        rate.sleep()
 
 
 if __name__ == '__main__':
