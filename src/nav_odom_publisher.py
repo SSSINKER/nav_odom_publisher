@@ -88,6 +88,7 @@ def mainplaying():
     rospy.Subscriber("fix", NavSatFix, callback)
     rospy.Subscriber("vel", TwistStamped, callback_gps_vel)
     rospy.Subscriber("imu_data", Imu, callback_imu_data)
+    is_separated_frame = rospy.get_param("separated_frame_id", True)
     rospy.init_node('nav_odom_publisher',anonymous=True)
     rate = rospy.Rate(10)
 
@@ -109,12 +110,13 @@ def mainplaying():
 
         nav_odom_pub.publish(odom)
 
-        base_link_GPS_2_base_link_tf.sendTransform(
-            (0, 0, 0),
-            tf.transformations.quaternion_from_euler(0, 0, 0),
-            rospy.Time.now(),
-            "base_link",
-            "base_link_GPS")
+        if is_separated_frame:
+            base_link_GPS_2_base_link_tf.sendTransform(
+                (0, 0, 0),
+                tf.transformations.quaternion_from_euler(0, 0, 0),
+                rospy.Time.now(),
+                "base_link",
+                "base_link_GPS")
         
         rate.sleep()
 

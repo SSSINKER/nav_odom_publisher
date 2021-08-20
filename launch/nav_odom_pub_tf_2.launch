@@ -1,11 +1,11 @@
 <launch>
     <node pkg="geonav_transform" type="geonav_transform_node" name="geonav_transform_node" clear_params="true" output="screen">
         <param name="frequency" value="10.0" type="double"/>
-        <param name="base_link_frame_id" value="base_link_GPS" type="string" />
-        <param name="odom_frame_id" value="odom_GPS" type="string" />
+        <param name="base_link_frame_id" value="base_link" type="string" />
+        <param name="odom_frame_id" value="odom" type="string" />
     </node>
     <node pkg="nav_odom_publisher" type="nav_odom_publisher.py" name="nav_odom_publisher">
-        <param name="separated_frame_id" value="true" type="bool" />
+        <param name="separated_frame_id" value="false" type="bool" />
     </node>
 
 </launch>
