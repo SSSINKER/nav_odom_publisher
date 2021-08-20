@@ -18,6 +18,7 @@ Launch File
 --
 * ```nav_odom_pub_tf.launch``` : Run nav_odom_publisher.py and geonav_transform_node. Use ```odom_GPS``` and ```base_link_GPS``` frame. Provide ```base_link_GPS``` to ```base_link``` tf.
 * ```nav_odom_pub_tf_2.launch``` : Run nav_odom_publisher.py and geonav_transform_node. Use odom and base_link frame
+
 Nodes
 --
 ### nav_odom_publisher.py
@@ -31,6 +32,6 @@ Nodes
   * ```nav_odom``` (nav_msgs/Odometry) : Odometry data from GPS and IMU. Position and linear velocity are provided by GPS,
   while orientation and angular velocity are provided by IMU.
 * Parameters
-  * ```separated_frame_id``` (```bool```, default=True) : if True, use ```odom_GPS``` for ```odom_frame_id``` and ```base_link_GPS``` for ```base_frame_id```. 
+  * ```separated_frame_id``` (```bool```, default=True) : if True, use ```odom_GPS``` for ```odom_frame_id``` and ```base_link_GPS``` for ```base_frame_id```.
 * Provided tf Transforms
   * ```base_link_GPS``` -> ```base_link``` : zero vector transformation between two base_link frames. Provided only if ```separated_frame_id``` param is set to True.
